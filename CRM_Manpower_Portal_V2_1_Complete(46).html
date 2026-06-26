@@ -1,0 +1,2382 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CRM 1&2 Electrical Manpower Portal V2.1</title>
+<style>
+body{font-family:Arial;background:#212121;color:#ECECEC;margin:20px}
+.header{text-align:center;margin-bottom:20px}
+.header h1{
+    background:#202123;
+    color:#10A37F;
+    padding:24px;
+    border-radius:18px;
+    margin-bottom:8px;
+    border:1px solid #3a3a3a;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+
+}
+.subtitle{
+ margin:6px 0;
+ color:#aaa;
+}
+
+.card{
+display:block;
+width:100%;
+box-sizing:border-box;
+background:linear-gradient(135deg,#2F2F2F,#3A3A3A);
+border:1px solid #444;
+border-radius:10px;
+padding:8px;
+margin:4px 0;
+min-width:0;
+text-align:center;
+transition:all .25s ease;
+cursor:pointer;
+}
+.card:hover{
+
+    transform: translateY(-5px);
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,0.4);
+
+    border-color:#10A37F;
+
+}
+.metric{
+font-size:20px;
+font-weight:bold;
+color:#10A37F;
+margin-top:2px;
+}
+.card div:first-child{
+font-size:15px;
+line-height:1.2;
+margin-bottom:4px;
+}
+.green{color:#10A37F;}
+.orange{color:#F59E0B;}
+.red{color:#EF4444;}
+.blue{color:#3B82F6;}
+
+
+
+.search-container{
+    position:relative;
+    text-align:center;
+    margin:8px 0 ;
+}
+.section{background:#2F2F2F;border:1px solid #444;border-radius:10px;padding:10px;margin:6px 0}
+input,button{padding:8px;margin:4px;border-radius:6px}
+input{background:#404040;color:white;border:1px solid #555}
+button{background:#10A37F;color:white;border:none;cursor:pointer}
+.toolbar-btn{
+
+    background:#10A37F;
+
+    color:white;
+
+    padding:10px 20px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    display:inline-block;
+
+    font-size:16px;
+
+    margin:4px;
+
+    border:none;
+
+}
+
+
+
+
+
+
+.record{padding:6px;border-bottom:1px solid #444}
+.hidden{display:none}
+table{width:100%;border-collapse:collapse}
+td{border:1px solid #444;padding:6px}
+#suggestions div{cursor:pointer}
+#dashboard{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+
+}
+/* ======== V3 Layout ======== */
+
+.app-layout{
+    display:grid;
+    grid-template-columns:260px 1fr;
+    gap:12px;
+    align-items:start;
+    margin-top:8px;
+}
+.sidebar{
+
+    background:#2D2F34;
+
+    border:1px solid #444;
+
+    border-radius:18px;
+
+    padding:10px;
+margin-top:-80px;
+    position:sticky;
+
+    top:20px;
+
+}
+
+.main-content{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:12px;
+
+}
+
+.content-panel{
+
+    background:#2D2F34;
+
+    border:1px solid #444;
+
+    border-radius:18px;
+
+    padding:14px;
+
+    min-height:500px;
+
+}
+
+.profile-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.profile-item{
+    background:#343541;
+    border:1px solid #565869;
+    border-radius:12px;
+    padding:15px;
+}
+
+.profile-item .label{
+    display:block;
+    color:#9CA3AF;
+    font-size:13px;
+    margin-bottom:8px;
+}
+
+.profile-item .value{
+    display:block;
+    font-size:20px;
+    font-weight:bold;
+    color:#ECECEC;
+}
+
+
+
+.action-bar{
+    display:flex;
+    gap:8px;
+    margin:8px 0;
+    flex-wrap:wrap;
+}
+
+.primary-btn{
+    background:#10A37F;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:10px 18px;
+    font-size:15px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.primary-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(16,163,127,.35);
+}
+
+.danger-btn{
+    background:#EF4444;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:10px 18px;
+    font-size:15px;
+    cursor:pointer;
+}
+
+.danger-btn:hover{
+    background:#DC2626;
+}
+
+#suggestions{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    width:70%;
+    max-width:850px;
+    margin-top:5px;
+    background:#343541;
+    border:1px solid #565869;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(0,0,0,.35);
+    display:none;
+    text-align:left;
+    z-index:9999;
+}
+
+#suggestions .record{
+    padding:12px 16px;
+    border-bottom:1px solid #4b4d5c;
+    cursor:pointer;
+    transition:.2s;
+}
+
+#suggestions .record:last-child{
+    border-bottom:none;
+}
+
+#suggestions .record:hover{
+    background:#10A37F;
+    color:white;
+}
+</style>
+
+
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+<div class="header">
+<h1>🏭 CRM 1&2 Electrical Portal</h1>
+<div class="subtitle">Bokaro Steel Limited-Steel Authority Of India Limited</div>
+</div>
+
+<div style="text-align:center;margin:15px 0;">
+
+<label class="toolbar-btn">
+
+Upload Employee Master CSV
+
+<input
+type="file"
+accept=".csv"
+style="display:none"
+onchange="loadCSV(event)">
+
+</label>
+
+<button
+class="toolbar-btn"
+onclick="exportExcel()">
+
+Export Excel
+
+</button>
+
+<button
+class="toolbar-btn"
+onclick="toggleTrainingMaster()">
+
+Training Master
+
+</button>
+
+
+
+</div>
+
+<div class="search-container">
+
+    <input
+        id="staffSearch"
+        type="text"
+        placeholder="Type Staff No. or Employee Name..."
+        oninput="showSuggestions()"
+        autocomplete="off"
+        style="
+            width:70%;
+            max-width:850px;
+            height:52px;
+            font-size:18px;
+            border-radius:30px;
+            padding:0 20px;
+            background:#343541;
+            border:1px solid #565869;
+            color:white;
+            outline:none;
+        ">
+
+    <div id="suggestions"></div>
+
+</div>
+<div class="app-layout">
+
+
+    <aside class="sidebar">
+
+      
+
+        <div id="dashboard"></div>
+
+    </aside>
+
+    <main class="main-content">
+<div class="content-panel">
+<div id="retirementSection"
+     class="section hidden">
+
+<h3>Remaining Retirements This Year</h3>
+
+<div id="retiringList"></div>
+
+</div>
+
+
+<div id="medicalSection"
+     class="section hidden">
+
+<h3>Medical Due In Next 30 Days</h3>
+
+<div id="dueList"></div>
+
+</div>
+
+
+
+<div id="activeSection"
+     class="section hidden">
+
+<h3>Active Employees</h3>
+
+<div id="activeList"></div>
+
+</div>
+
+<div id="retiredSection"
+     class="section hidden">
+
+<h3>Retired Employees</h3>
+
+<div id="retiredList"></div>
+
+</div>
+
+
+<div id="trainedSection"
+     class="section hidden">
+
+<h3>Employees Trained</h3>
+
+<div id="trainedList"></div>
+
+</div>
+
+
+
+<div id="medicalDoneSection"
+     class="section hidden">
+
+<h3>Medicals Done This Year</h3>
+
+<div id="medicalDoneList"></div>
+
+</div>
+<div id="overdueSection"
+     class="section hidden">
+
+<h3>Overdue Medicals</h3>
+
+<div id="overdueList"></div>
+
+</div>
+
+
+<div id="trainingYearSection"
+     class="section hidden">
+
+<h3>
+Trainings Conducted This Year
+<button
+style="float:right"
+onclick="closeTrainingYear()">
+Close
+</button>
+</h3>
+
+<div id="trainingYearList"></div>
+
+</div>
+<div id="trainingSummarySection"
+     class="section hidden">
+
+<h3>Training Summary</h3>
+
+<div id="trainingSummaryList"></div>
+
+</div>
+
+
+<div class="section hidden" id="trainingMasterSection">
+<h3>Training Master</h3>
+
+
+
+<input id="newTraining"
+       placeholder="Training Name">
+
+<input id="trainingDuration"
+       type="number"
+       step="0.5"
+       placeholder="Duration">
+
+<select id="durationUnit">
+<option value="Hours">Hours</option>
+<option value="Day">Day</option>
+<option value="Days">Days</option>
+</select>
+<button onclick="addTrainingMaster()">
+Add Training
+</button>
+
+<div id="trainingMasterList"></div>
+
+</div>
+
+
+
+
+
+<div id="profile" class="section hidden">
+<h2>Employee Profile</h2>
+<div id="profileInfo"></div>
+<div><b>Training Records:</b> <span id="trCount">0</span> |
+<b>Medical Records:</b> <span id="mdCount">0</span></div>
+
+<div class="action-bar">
+
+<button class="primary-btn"
+onclick="printProfile()">
+🖨 Print
+</button>
+
+<button class="primary-btn"
+onclick="editEmployee()">
+✏ Edit
+</button>
+
+<button class="danger-btn"
+onclick="closeProfile()">
+✖ Close
+</button>
+
+</div>
+<h3>Training History</h3>
+<select id="tname"></select>
+<input id="tdate" type="date">
+<button onclick="addTraining()">Add Training</button>
+<div id="trainingList"></div>
+
+<h3>Medical History</h3>
+<input id="mdate" type="date">
+<button onclick="addMedical()">Add Medical</button>
+<div id="medicalList"></div>
+</div></div>
+</main>
+
+</div>
+<script>
+let employees=JSON.parse(localStorage.getItem('employees')||'[]');
+let trainings=JSON.parse(localStorage.getItem('trainings')||'[]');
+let trainingMaster =
+JSON.parse(
+localStorage.getItem('trainingMaster')
+||
+'[]'
+);
+
+
+
+
+let medicals=JSON.parse(localStorage.getItem('medicals')||'[]');
+let currentStaff=null;
+
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBvn_8x5Vm0hoVEaUbWVcAtCYbz_GJVnDE",
+  authDomain: "crm12-e-manpower-portal.firebaseapp.com",
+  projectId: "crm12-e-manpower-portal",
+  storageBucket: "crm12-e-manpower-portal.firebasestorage.app",
+  messagingSenderId: "600384863365",
+  appId: "1:600384863365:web:31fad9a5f70eb04a47bdec"
+};
+const FIREBASE_COLLECTION = "crmMobile";
+const FIREBASE_DOCUMENT = "latestSnapshot";
+const FIREBASE_SDK_VERSION = "11.10.0";
+let firebaseDbPromise = null;
+
+function saveAll(){
+
+localStorage.setItem('employees',JSON.stringify(employees));
+localStorage.setItem('trainings',JSON.stringify(trainings));
+localStorage.setItem('medicals',JSON.stringify(medicals));
+localStorage.setItem('trainingMaster',JSON.stringify(trainingMaster));
+
+autoPublish();
+
+}
+
+function parseDate(value){
+if(!value) return null;
+if(value instanceof Date && !isNaN(value)) return startOfDay(value);
+let s=String(value).trim();
+if(!s) return null;
+let iso=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+if(iso) return new Date(Number(iso[1]),Number(iso[2])-1,Number(iso[3]));
+let local=s.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})$/);
+if(local){
+let y=Number(local[3]);
+if(y<100)y+=2000;
+return new Date(y,Number(local[2])-1,Number(local[1]));
+}
+let d=new Date(s);
+return isNaN(d) ? null : startOfDay(d);
+}
+
+function startOfDay(value){
+let d=new Date(value);
+d.setHours(0,0,0,0);
+return d;
+}
+
+function todayDate(){
+return startOfDay(new Date());
+}
+
+function toISODate(value){
+let d=parseDate(value);
+if(!d) return '';
+return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+function fmt(s){
+let d=parseDate(s);
+if(!d) return '';
+return String(d.getDate()).padStart(2,'0')+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+d.getFullYear();
+}
+
+function convertDate(d){
+return toISODate(d);
+}
+
+function escapeHTML(value){
+return String(value ?? '').replace(/[&<>'"]/g,ch=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+"'":'&#39;',
+'"':'&quot;'
+}[ch]));
+}
+
+function encodeArg(value){
+return encodeURIComponent(String(value ?? ''));
+}
+
+function decodeArg(value){
+try{return decodeURIComponent(value);}catch(err){return value;}
+}
+
+function parseCSVLine(row){
+let cells=[];
+let cell='';
+let quoted=false;
+for(let i=0;i<row.length;i++){
+let ch=row[i];
+if(ch==='"'){
+if(quoted && row[i+1]==='"'){
+cell+='"';
+i++;
+}else{
+quoted=!quoted;
+}
+}else if(ch===',' && !quoted){
+cells.push(cell);
+cell='';
+}else{
+cell+=ch;
+}
+}
+cells.push(cell);
+return cells;
+}
+
+
+
+function showTrainingSummary(){
+
+    let section =
+    document.getElementById(
+    "trainingSummarySection"
+    );
+
+    section.classList.toggle(
+    "hidden"
+    );
+
+    let summary = {};
+
+    trainings.forEach(t => {
+
+        if(!summary[t.name]){
+
+            summary[t.name] = {
+                count:0,
+                duration:t.duration || '',
+                unit:t.unit || ''
+            };
+
+        }
+
+        summary[t.name].count++;
+
+    });
+
+    trainingSummaryList.innerHTML =
+
+    Object.entries(summary)
+
+    .sort((a,b)=>b[1].count-a[1].count)
+
+    .map(([name,data]) =>
+
+    `<div class='record'>
+
+    <b>${name}</b>
+    (${data.duration} ${data.unit})
+    : ${data.count}
+
+    </div>`
+
+    )
+
+    .join('');
+
+}
+
+
+function editEmployee(){
+
+    if(!currentStaff) return;
+
+    let emp =
+    employees.find(
+        e => e.staff === currentStaff
+    );
+
+    if(!emp) return;
+
+    let name =
+    prompt(
+        'Employee Name',
+        emp.name
+    );
+
+    if(name===null) return;
+
+    let designation =
+    prompt(
+        'Designation',
+        emp.designation
+    );
+
+    if(designation===null) return;
+
+
+
+
+let status =
+prompt(
+    'Status (Active/Retired/Transferred)',
+    emp.status || 'Active'
+);
+
+if(status===null) return;
+
+  let retirement =
+prompt(
+    'Retirement Date (DD-MM-YYYY)',
+    fmt(emp.retirement)
+);
+
+if(retirement===null) return;
+
+retirement = convertDate(retirement);
+
+    if(retirement===null) return;
+
+    emp.name = name;
+    emp.designation = designation;
+emp.status = status;
+    emp.retirement = retirement;
+
+    saveAll();
+
+    dashboard();
+
+    openProfile(currentStaff);
+
+}
+
+function latestMedicalsByStaff(){
+let latest=new Map();
+medicals.forEach(m=>{
+let date=parseDate(m.date);
+if(!date) return;
+let existing=latest.get(m.staff);
+if(!existing || date>parseDate(existing.date)) latest.set(m.staff,m);
+});
+return latest;
+}
+
+function loadCSV(ev){
+const f=ev.target.files[0];
+if(!f) return;
+const r=new FileReader();
+r.onload=()=>{
+employees=[];
+let rows=r.result.split(/\r?\n/).filter(x=>x.trim());
+rows.forEach((row,index)=>{
+let c=parseCSVLine(row);
+if(c.length<5)return;
+let first=String(c[0]||'').trim().toLowerCase();
+let staffHead=String(c[2]||'').trim().toLowerCase();
+if(index===0 && (first.includes('sl') || staffHead.includes('staff'))) return;
+let staff=String(c[2]||'').trim();
+if(!staff)return;
+employees.push({
+name:String(c[1]||'').trim(),
+staff:staff,
+designation:String(c[3]||'').trim(),
+retirement:convertDate(c[4]),
+status:'Active'
+});
+});
+saveAll();
+dashboard();
+closeProfile();
+alert(employees.length+' employees loaded');
+ev.target.value='';
+};
+r.readAsText(f);
+}
+
+function dashboard(){
+const dash =
+document.getElementById("dashboard");
+let today=todayDate();
+let currentYear =
+today.getFullYear();
+
+
+employees.forEach(e=>{
+
+    let retirement =
+    parseDate(e.retirement);
+
+    if(
+        (e.status || 'Active') === 'Active'
+        &&
+        retirement
+        &&
+        retirement < today
+    ){
+        e.status = 'Retired';
+    }
+
+});
+
+localStorage.setItem(
+    'employees',
+    JSON.stringify(employees)
+);
+
+let active=employees.filter(e=>
+
+(e.status || 'Active') === 'Active'
+
+).length;
+
+let retiring=employees.filter(e=>{
+
+    let r=parseDate(e.retirement);
+
+    return r &&
+           r.getFullYear() === currentYear &&
+           r >= today;
+
+});
+let overdue=0,d30=0;
+let totalRetirementsThisYear =
+employees.filter(e=>{
+
+    let r = parseDate(e.retirement);
+
+    return r &&
+           r.getFullYear() === currentYear;
+
+}).length;
+
+let remainingRetirementsThisYear =
+employees.filter(e=>{
+
+    let r = parseDate(e.retirement);
+
+    return r &&
+           r.getFullYear() === currentYear &&
+           r >= today;
+
+}).length;
+
+let retiredEmployees =
+employees.filter(
+    e => (e.status || 'Active') === 'Retired'
+).length;
+let latestMedicals = latestMedicalsByStaff();
+
+let medicalThisYear =
+new Set(
+Array.from(latestMedicals.values())
+.filter(m => {
+let date=parseDate(m.date);
+return date && date.getFullYear() === currentYear;
+})
+.map(m => m.staff)
+).size;
+
+latestMedicals.forEach(m=>{
+let due=parseDate(m.due);
+if(!due) return;
+let diff=(due-today)/(1000*60*60*24);
+if(diff<0)overdue++;
+else if(diff<=30)d30++;
+});
+
+
+
+let trainingsThisYear =
+trainings.filter(t => {
+
+    let date = parseDate(t.date);
+
+    return date &&
+           date.getFullYear() === currentYear;
+
+}).length;
+
+
+let trainedEmployees =
+new Set(
+    trainings.map(t => t.staff)
+).size;
+
+document.getElementById("dashboard").innerHTML = `
+<div class='card clickable'
+onclick='toggleActive()'>
+
+<div>👥 Active Employees</div>
+
+<div class='metric green'>
+${active}
+</div>
+
+</div>
+<div class='card'
+onclick='toggleMedicalsDoneThisYear()'>
+
+<div>🩺 Medicals Done This Year</div>
+
+<div class='metric green'>
+${medicalThisYear}
+</div>
+
+</div>
+</div>
+
+
+<div class='card'
+onclick='toggleTrainedEmployees()'>
+
+<div>🎓 Employees Trained</div>
+
+<div class='metric green'>
+${trainedEmployees}
+</div>
+
+</div>
+<div class='card'
+onclick='showTrainingsThisYear()'>
+
+<div>📚 Trainings This Year</div>
+
+<div class='metric green'>
+${trainingsThisYear}
+</div>
+
+</div>
+
+
+
+
+
+<div class='card'
+onclick='toggleRetirements()'>
+
+<div>📅 Total Retirements This Year</div>
+
+<div class='metric orange'>
+${totalRetirementsThisYear}
+</div>
+
+</div>
+
+<div class='card'
+onclick='toggleRetirements()'>
+
+<div>⏳ Remaining Retirements This Year</div>
+
+<div class='metric orange'>
+${remainingRetirementsThisYear}
+</div>
+
+</div>
+
+
+
+<div class='card'
+onclick='toggleRetired()'>
+
+<div>👴 Retired Employees</div>
+
+<div class='metric red'>
+${retiredEmployees}
+</div>
+
+</div>
+
+<div class='card clickable'
+onclick='toggleOverdue()'>
+
+<div>🔴 Overdue Medicals</div>
+
+<div class='metric red'>
+${overdue}
+</div>
+
+</div>
+<div class='card'
+onclick='toggleMedicals()'>
+
+<div>📅 Medical Due in 30 Days</div>
+<div class='metric blue'>${d30}</div>
+
+</div>
+
+`;
+
+retiringList.innerHTML=retiring.map(e=>`<div class='record' onclick="openProfile('${encodeArg(e.staff)}')">${escapeHTML(e.staff)} - ${escapeHTML(e.name)} (Retires: ${fmt(e.retirement)})</div>`).join('') || 'No employees retiring in next 6 months';
+
+activeList.innerHTML =
+employees
+.filter(e =>
+
+(e.status || 'Active') === 'Active'
+
+)
+.map(e =>
+`<div class='record'
+style="cursor:pointer"
+onclick="openProfile('${encodeArg(e.staff)}')">
+
+${escapeHTML(e.staff)} - ${escapeHTML(e.name)}
+
+</div>`
+)
+.join('') || 'No active employees';
+
+
+retiredList.innerHTML =
+employees
+.filter(e =>
+
+(e.status || 'Active') === 'Retired'
+
+)
+.map(e =>
+`<div class='record'
+style="cursor:pointer"
+onclick="openProfile('${encodeArg(e.staff)}')">
+
+${escapeHTML(e.staff)} - ${escapeHTML(e.name)}
+
+</div>`
+)
+.join('') || 'No retired employees';
+
+trainedList.innerHTML =
+employees
+.filter(e =>
+
+    trainings.some(
+        t => t.staff === e.staff
+    )
+
+)
+.map(e =>
+`<div class='record'
+style="cursor:pointer"
+onclick="openProfile('${encodeArg(e.staff)}')">
+
+${escapeHTML(e.staff)} - ${escapeHTML(e.name)}
+
+</div>`
+)
+.join('') || 'No trained employees';
+
+
+medicalDoneList.innerHTML =
+Array.from(latestMedicals.values())
+.filter(m => {
+
+    let d = parseDate(m.date);
+
+    return d &&
+           d.getFullYear() === currentYear;
+
+})
+.map(m => {
+
+    let emp =
+    employees.find(
+        e => e.staff === m.staff
+    );
+
+    return `
+    <div class='record'
+    style="cursor:pointer"
+    onclick="openProfile('${encodeArg(m.staff)}')">
+
+    ${escapeHTML(m.staff)}
+    - ${escapeHTML(emp?.name || '')}
+
+    </div>`;
+
+})
+.join('') || 'No medicals done this year';
+overdueList.innerHTML =
+Array.from(latestMedicals.values())
+.filter(m => {
+let due=parseDate(m.due);
+return due && due < today;
+})
+.map(m =>
+`<div class='record'
+style="cursor:pointer"
+onclick="openProfile('${encodeArg(m.staff)}')">
+
+${escapeHTML(m.staff)} - Medical Overdue
+
+</div>`
+)
+.join('')
+||
+'No overdue medicals';
+
+dueList.innerHTML =
+Array.from(latestMedicals.values())
+.filter(m => {
+let due=parseDate(m.due);
+if(!due) return false;
+let diff =
+(due-today)
+/(1000*60*60*24);
+
+return diff >= 0 &&
+       diff <= 30;
+})
+.map(m =>
+`<div class='record'
+style="cursor:pointer"
+onclick="openProfile('${encodeArg(m.staff)}')">
+
+${escapeHTML(m.staff)} - Due ${fmt(m.due)}
+
+</div>`
+)
+.join('')
+||
+'No employees due in next 30 days';
+}
+function showSuggestions(){
+
+    let q = staffSearch.value.trim();
+
+    if(q.length < 2){
+        suggestions.innerHTML = "";
+        suggestions.style.display = "none";
+        return;
+    }
+
+    let search = q.toLowerCase();
+
+    let list = employees
+        .filter(e =>
+            (e.status || 'Active') === 'Active' &&
+            (
+                e.staff.includes(q) ||
+                e.name.toLowerCase().includes(search)
+            )
+        )
+        .slice(0,10);
+
+    suggestions.innerHTML = list.map(e => `
+        <div class='record'
+            onclick="openProfile('${encodeArg(e.staff)}')">
+            ${escapeHTML(e.staff)} - ${escapeHTML(e.name)}
+        </div>
+    `).join("");
+
+    suggestions.style.display = list.length ? "block" : "none";
+}
+
+function openProfile(staff){
+staff=decodeArg(staff);
+currentStaff=staff;
+
+document.getElementById("activeSection")
+.classList.add("hidden");
+
+document.getElementById("retirementSection")
+.classList.add("hidden");
+
+document.getElementById("medicalSection")
+.classList.add("hidden");
+document.getElementById("overdueSection")
+.classList.add("hidden");
+
+
+
+
+
+
+let e=employees.find(x=>x.staff===staff);
+if(!e){
+alert('Employee record not found');
+closeProfile();
+return;
+}
+profile.classList.remove('hidden');
+staffSearch.value=staff;
+suggestions.innerHTML = "";
+suggestions.style.display = "none";
+profileInfo.innerHTML = `
+<div class="profile-grid">
+
+    <div class="profile-item">
+        <span class="label">👤 Staff No</span>
+        <span class="value">${escapeHTML(e.staff)}</span>
+    </div>
+
+    <div class="profile-item">
+        <span class="label">🧑 Name</span>
+        <span class="value">${escapeHTML(e.name)}</span>
+    </div>
+
+    <div class="profile-item">
+        <span class="label">💼 Designation</span>
+        <span class="value">${escapeHTML(e.designation)}</span>
+    </div>
+
+    <div class="profile-item">
+        <span class="label">🟢 Status</span>
+        <span class="value">${escapeHTML(e.status || 'Active')}</span>
+    </div>
+
+    <div class="profile-item">
+        <span class="label">📅 Retirement</span>
+        <span class="value">${fmt(e.retirement)}</span>
+    </div>
+
+</div>`;
+
+trCount.textContent=trainings.filter(t=>t.staff===staff).length;
+mdCount.textContent=medicals.filter(m=>m.staff===staff).length;
+
+renderTraining();
+renderMedical();
+}
+
+function addTraining(){
+
+if(!currentStaff || !tname.value || !tdate.value)
+return;
+
+let selectedTraining =
+trainingMaster.find(
+    t => t.name === tname.value
+);
+
+if(!selectedTraining){
+    alert("Training not found in Training Master");
+    return;
+}
+
+trainings.push({
+    staff: currentStaff,
+    name: selectedTraining.name,
+    duration: selectedTraining.duration,
+    unit: selectedTraining.unit,
+    date: tdate.value
+});
+
+saveAll();
+
+tdate.value='';
+
+renderTraining();
+
+dashboard();
+
+}
+function addMedical(){
+if(!currentStaff||!mdate.value)return;
+let d=new Date(mdate.value);
+d.setFullYear(d.getFullYear()+1);
+medicals.push({staff:currentStaff,date:mdate.value,due:toISODate(d)});
+saveAll(); mdate.value=''; renderMedical(); dashboard(); openProfile(currentStaff);
+}
+
+function renderTraining(){
+let list=trainings.filter(t=>t.staff===currentStaff);
+trainingList.innerHTML=list.map(t=>{
+let i=trainings.indexOf(t);
+return `<div class='record'>${escapeHTML(t.name)}
+| ${escapeHTML(t.duration)} ${escapeHTML(t.unit)}
+| ${fmt(t.date)}
+<button onclick='editTraining(${i})'>Edit</button>
+<button onclick='deleteTraining(${i})'>Delete</button></div>`;
+}).join('') || 'No training records';
+}
+
+function renderMedical(){
+let list=medicals.filter(m=>m.staff===currentStaff);
+medicalList.innerHTML=list.map(m=>{
+let i=medicals.indexOf(m);
+return `<div class='record'>Medical: ${fmt(m.date)} | Due: ${fmt(m.due)}
+<button onclick='editMedical(${i})'>Edit</button>
+<button onclick='deleteMedical(${i})'>Delete</button></div>`;
+}).join('') || 'No medical records';
+}
+
+
+function toggleTrainingMaster(){
+
+    hideAllSections();
+
+    document
+    .getElementById("profile")
+    .classList.add("hidden");
+
+    let section =
+    document.getElementById("trainingMasterSection");
+
+    let wasHidden =
+    section.classList.contains("hidden");
+
+    section.classList.add("hidden");
+
+    if(wasHidden){
+        section.classList.remove("hidden");
+    }
+
+}
+function editTraining(i){
+
+    let training = trainings[i];
+
+    let name = prompt(
+        'Training Name',
+        training.name
+    );
+
+    if(!name) return;
+
+    let duration = prompt(
+        'Duration',
+        training.duration || ''
+    );
+
+    if(duration===null) return;
+
+    let unit = prompt(
+        'Unit (Hours/Day/Days)',
+        training.unit || 'Hours'
+    );
+
+    if(unit===null) return;
+
+    training.name = name;
+    training.duration = duration;
+    training.unit = unit;
+
+    saveAll();
+    renderTraining();
+
+}
+function closeProfile(){
+
+    profile.classList.add('hidden');
+
+    currentStaff = null;
+
+    staffSearch.value = "";
+
+    suggestions.innerHTML = "";
+
+}
+
+function printProfile(){
+
+    if(!currentStaff) return;
+
+    let emp = employees.find(
+        e => e.staff === currentStaff
+    );
+
+    if(!emp){
+        alert('Employee record not found');
+        return;
+    }
+
+    let tr = trainings.filter(
+        t => t.staff === currentStaff
+    );
+
+    let md = medicals.filter(
+        m => m.staff === currentStaff
+    );
+
+ let win = window.open('about:blank');
+
+    win.document.write(`
+    <html>
+    <head>
+    <title>Employee Profile</title>
+    <style>
+
+.green{
+    color:#10A37F;
+}
+
+.orange{
+    color:#F59E0B;
+}
+
+.red{
+    color:#EF4444;
+}
+
+.blue{
+    color:#3B82F6;
+}
+    body{font-family:Arial;margin:20px;}
+    table{
+        width:100%;
+        border-collapse:collapse;
+        margin-bottom:20px;
+    }
+    td,th{
+        border:1px solid #000;
+        padding:8px;
+    }
+    h2,h3{
+        text-align:center;
+    }
+
+
+
+
+    </style>
+    </head>
+    <body>
+
+    <h2>CRM 1&2 Electrical Manpower Portal</h2>
+
+    <table>
+    <tr><td>Staff No</td><td>${escapeHTML(emp.staff)}</td></tr>
+<tr><td>Name</td><td>${escapeHTML(emp.name)}</td></tr>
+<tr><td>Designation</td><td>${escapeHTML(emp.designation)}</td></tr>
+<tr><td>Status</td><td>${escapeHTML(emp.status || 'Active')}</td></tr>
+<tr><td>Retirement Date</td><td>${fmt(emp.retirement)}</td></tr>
+    </table>
+
+<h3>Training History</h3>
+
+<table>
+<tr>
+<th>Training Name</th>
+<th>Duration</th>
+<th>Date</th>
+</tr>
+
+${tr.map(t => `
+<tr>
+<td>${escapeHTML(t.name)}</td>
+<td>${escapeHTML(t.duration || '')} ${escapeHTML(t.unit || '')}</td>
+<td>${fmt(t.date)}</td>
+</tr>
+`).join('')}
+
+    </table>
+
+    <h3>Medical History</h3>
+
+    <table>
+    <tr>
+    <th>Medical Date</th>
+    <th>Due Date</th>
+    </tr>
+
+    ${md.map(m => `
+    <tr>
+    <td>${fmt(m.date)}</td>
+    <td>${fmt(m.due)}</td>
+    </tr>
+    `).join('')}
+
+    </table>
+
+    </body>
+    </html>
+    `);
+
+    win.document.close();
+
+    setTimeout(() => {
+        win.print();
+    }, 500);
+}
+function toggleRetirements(){
+
+    let section =
+    document.getElementById(
+    "retirementSection"
+    );
+
+    let wasHidden =
+    section.classList.contains("hidden");
+
+    hideAllSections();
+
+    if(wasHidden)
+        section.classList.remove("hidden");
+
+}
+function toggleMedicals(){
+
+    let section =
+    document.getElementById(
+    "medicalSection"
+    );
+
+    let wasHidden =
+    section.classList.contains("hidden");
+
+    hideAllSections();
+
+    if(wasHidden)
+        section.classList.remove("hidden");
+
+}
+function toggleActive(){
+
+    let section =
+    document.getElementById(
+    "activeSection"
+    );
+
+    let wasHidden =
+    section.classList.contains("hidden");
+
+    hideAllSections();
+
+    if(wasHidden)
+        section.classList.remove("hidden");
+
+}
+
+
+function toggleRetired(){
+
+    let section =
+    document.getElementById("retiredSection");
+
+    let wasHidden =
+    section.classList.contains("hidden");
+
+    hideAllSections();
+
+    if(wasHidden){
+        section.classList.remove("hidden");
+    }
+
+}
+
+
+
+function toggleTrainedEmployees(){
+
+    let section =
+    document.getElementById(
+        "trainedSection"
+    );
+
+    let wasHidden =
+    section.classList.contains("hidden");
+
+    hideAllSections();
+
+    if(wasHidden)
+        section.classList.remove("hidden");
+
+}
+
+function toggleMedicalsDoneThisYear(){
+
+    let section =
+    document.getElementById(
+        "medicalDoneSection"
+    );
+
+    let wasHidden =
+    section.classList.contains("hidden");
+
+    hideAllSections();
+
+    if(wasHidden)
+        section.classList.remove("hidden");
+
+}
+function toggleOverdue(){
+
+    let section =
+    document.getElementById(
+    "overdueSection"
+    );
+
+    let wasHidden =
+    section.classList.contains("hidden");
+
+    hideAllSections();
+
+    if(wasHidden)
+        section.classList.remove("hidden");
+
+}
+
+function exportExcel(){
+
+    if(typeof XLSX === 'undefined'){
+        alert('Excel export library could not be loaded. Please connect to the internet and reload this page.');
+        return;
+    }
+
+    let wb = XLSX.utils.book_new();
+
+    // Employees Sheet
+let empSheet = employees.map(e => ({
+    "Staff No": e.staff,
+    "Name": e.name,
+    "Designation": e.designation,
+    "Status": e.status || "Active",
+    "Retirement Date": fmt(e.retirement)
+}));
+    let wsEmp =
+    XLSX.utils.json_to_sheet(empSheet);
+
+    XLSX.utils.book_append_sheet(
+        wb,
+        wsEmp,
+        "Employees"
+    );
+
+    // Medical Sheet
+let medSheet = medicals.map(m => {
+
+    let emp =
+    employees.find(
+        e => e.staff === m.staff
+    );
+
+    return {
+
+        "Staff No": m.staff,
+
+        "Name": emp ? emp.name : "",
+
+        "Medical Date": fmt(m.date),
+
+        "Due Date": fmt(m.due)
+
+    };
+
+});
+
+    let wsMed =
+    XLSX.utils.json_to_sheet(medSheet);
+
+    XLSX.utils.book_append_sheet(
+        wb,
+        wsMed,
+        "Medicals"
+    );
+
+    // Training Sheet
+let trSheet = trainings.map(t => {
+
+    let emp =
+    employees.find(
+        e => e.staff === t.staff
+    );
+
+  return {
+
+    "Staff No": t.staff,
+
+    "Name": emp ? emp.name : "",
+
+    "Training Name": t.name,
+
+    "Duration": `${t.duration || ''} ${t.unit || ''}`,
+
+    "Training Date": fmt(t.date)
+
+};
+
+});
+    let wsTr =
+    XLSX.utils.json_to_sheet(trSheet);
+
+    XLSX.utils.book_append_sheet(
+        wb,
+        wsTr,
+        "Trainings"
+    );
+
+let trainingSummary = {};
+
+trainings.forEach(t => {
+
+    if(!trainingSummary[t.name]){
+
+        trainingSummary[t.name] = {
+            count:0,
+            duration:t.duration || '',
+            unit:t.unit || ''
+        };
+
+    }
+
+    trainingSummary[t.name].count++;
+
+});
+let summarySheet =
+
+Object.entries(trainingSummary)
+.map(([name,data]) => ({
+
+    "Training Name": name,
+
+    "Duration":
+    `${data.duration} ${data.unit}`,
+
+    "Employees Trained":
+    data.count
+
+}));
+let wsSummary =
+
+XLSX.utils.json_to_sheet(
+summarySheet
+);
+
+XLSX.utils.book_append_sheet(
+wb,
+wsSummary,
+"Training Summary"
+);
+let employeeTrainingSummary = {};
+
+trainings.forEach(t => {
+
+    if(!employeeTrainingSummary[t.staff]){
+
+        let emp =
+        employees.find(
+            e => e.staff === t.staff
+        );
+
+        employeeTrainingSummary[t.staff] = {
+            name: emp ? emp.name : "",
+            count: 0
+        };
+
+    }
+
+    employeeTrainingSummary[t.staff].count++;
+
+});
+
+let employeeSummarySheet =
+
+Object.entries(employeeTrainingSummary)
+
+.map(([staff,data]) => ({
+
+    "Staff No": staff,
+
+    "Name": data.name,
+
+    "No. of Trainings": data.count
+
+}))
+
+.sort((a,b)=>
+b["No. of Trainings"] -
+a["No. of Trainings"]
+);
+
+let wsEmployeeSummary =
+
+XLSX.utils.json_to_sheet(
+employeeSummarySheet
+);
+
+XLSX.utils.book_append_sheet(
+wb,
+wsEmployeeSummary,
+"Employee Training Summary"
+);
+    // Dashboard Sheet
+    let today = todayDate();
+
+let currentYear =
+today.getFullYear();
+
+   let active =
+employees.filter(
+    e =>
+    (e.status || 'Active') === 'Active'
+).length;
+
+
+let totalRetirementsThisYear =
+employees.filter(e=>{
+
+    let r=parseDate(e.retirement);
+
+    return r &&
+           r.getFullYear() === currentYear;
+
+}).length;
+
+let remainingRetirementsThisYear =
+employees.filter(e=>{
+
+    let r=parseDate(e.retirement);
+
+    return r &&
+           r.getFullYear() === currentYear &&
+           r >= today;
+
+}).length;
+    let overdue = 0;
+    let due30 = 0;
+
+    latestMedicalsByStaff().forEach(m=>{
+
+        let due=parseDate(m.due);
+        if(!due) return;
+        let diff =
+        (due-today)
+        /(1000*60*60*24);
+
+        if(diff < 0)
+            overdue++;
+
+        else if(diff <= 30)
+            due30++;
+
+    });
+
+    let dashSheet = [
+
+        {
+            KPI:"Active Employees",
+            Count:active
+        },
+
+        {
+    KPI:"Total Retirements This Year",
+    Count:totalRetirementsThisYear
+},
+{
+    KPI:"Remaining Retirements This Year",
+    Count:remainingRetirementsThisYear
+},
+
+        {
+            KPI:"Overdue Medicals",
+            Count:overdue
+        },
+
+        {
+            KPI:"Medical Due in 30 Days",
+            Count:due30
+        }
+
+    ];
+
+    let wsDash =
+    XLSX.utils.json_to_sheet(
+        dashSheet
+    );
+
+    XLSX.utils.book_append_sheet(
+        wb,
+        wsDash,
+        "Dashboard"
+    );
+
+    XLSX.writeFile(
+        wb,
+        "CRM_Manpower_Report.xlsx"
+    );
+
+}
+
+
+function deleteTraining(i){
+
+    let training = trainings[i];
+
+    if(!confirm(
+        `Delete training:\n${training.name}\n${fmt(training.date)} ?`
+    )) return;
+
+    trainings.splice(i,1);
+
+    saveAll();
+    renderTraining();
+    openProfile(currentStaff);
+    dashboard();
+}
+
+
+function deleteMedical(i){
+
+    let medical = medicals[i];
+
+    if(!confirm(
+        `Delete medical record?\nMedical Date: ${fmt(medical.date)}`
+    )) return;
+
+    medicals.splice(i,1);
+
+    saveAll();
+
+    renderMedical();
+
+    openProfile(currentStaff);
+
+    dashboard();
+}
+
+
+function editMedical(i){
+
+    let medical = medicals[i];
+
+    let newDate = prompt(
+        'Medical Date (DD-MM-YYYY)',
+        fmt(medical.date)
+    );
+
+
+if(newDate===null) return;
+
+newDate = convertDate(newDate);
+
+    if(!newDate) return;
+
+    let due = new Date(newDate);
+    due.setFullYear(due.getFullYear() + 1);
+
+    medical.date = newDate;
+    medical.due = toISODate(due);
+
+    saveAll();
+
+    renderMedical();
+
+    openProfile(currentStaff);
+
+    dashboard();
+
+}
+function hideAllSections(){
+
+    document
+    .getElementById("activeSection")
+    .classList.add("hidden");
+
+    document
+    .getElementById("retiredSection")
+    .classList.add("hidden");
+document
+.getElementById("trainedSection")
+.classList.add("hidden");
+
+
+document
+.getElementById("medicalDoneSection")
+.classList.add("hidden");
+    document
+    .getElementById("retirementSection")
+    .classList.add("hidden");
+
+    document
+    .getElementById("medicalSection")
+    .classList.add("hidden");
+
+    document
+    .getElementById("overdueSection")
+    .classList.add("hidden");
+
+    document
+    .getElementById("trainingYearSection")
+    .classList.add("hidden");
+document
+.getElementById("trainingMasterSection")
+.classList.add("hidden");
+
+document
+.getElementById("profile")
+.classList.add("hidden");
+
+document.getElementById("staffSearch").value = "";
+
+document.getElementById("suggestions").innerHTML = "";
+
+document.getElementById("suggestions").style.display = "none";
+}
+function firebaseConfigured(){
+    return FIREBASE_CONFIG.apiKey && !FIREBASE_CONFIG.apiKey.startsWith("PASTE_") &&
+           FIREBASE_CONFIG.projectId && !FIREBASE_CONFIG.projectId.startsWith("PASTE_") &&
+           FIREBASE_CONFIG.appId && !FIREBASE_CONFIG.appId.startsWith("PASTE_");
+}
+
+async function getFirebaseDb(){
+    if(!firebaseConfigured()){
+        throw new Error("Firebase is not configured. Paste your Firebase web app config into FIREBASE_CONFIG first.");
+    }
+    if(!firebaseDbPromise){
+        firebaseDbPromise = Promise.all([
+            import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-app.js`),
+            import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-firestore.js`)
+        ]).then(([appModule, firestoreModule])=>{
+            let app = appModule.initializeApp(FIREBASE_CONFIG);
+            return {
+                db: firestoreModule.getFirestore(app),
+                setDoc: firestoreModule.setDoc,
+                doc: firestoreModule.doc,
+                serverTimestamp: firestoreModule.serverTimestamp
+            };
+        });
+    }
+    return firebaseDbPromise;
+}
+
+async function publishMobileData(){
+    try{
+        let snapshot = buildMobileSnapshot();
+        let firebase = await getFirebaseDb();
+        await firebase.setDoc(
+            firebase.doc(firebase.db, FIREBASE_COLLECTION, FIREBASE_DOCUMENT),
+            {
+                snapshot: snapshot,
+                publishedAt: firebase.serverTimestamp(),
+                generatedAt: snapshot.generatedAt,
+                schemaVersion: snapshot.schemaVersion
+            }
+        );
+       console.log("Data synced to cloud successfully");
+    }catch(err){
+        console.error(err);
+    }
+}
+
+
+let publishTimer = null;
+
+function autoPublish(){
+
+    clearTimeout(publishTimer);
+
+    publishTimer = setTimeout(
+        publishMobileData,
+        3000
+    );
+
+}
+
+
+function buildMobileSnapshot(){
+
+
+console.log("buildMobileSnapshot executed");
+let today = todayDate();
+
+let endOfYear = new Date(
+    today.getFullYear(),
+    11,
+    31
+);
+
+    let latestMedicals = Array.from(latestMedicalsByStaff().values());
+    let medicalsDoneThisYear = new Set(
+        latestMedicals
+        .filter(m=>{
+            let date = parseDate(m.date);
+            return date && date.getFullYear() === today.getFullYear();
+        })
+        .map(m=>m.staff)
+    ).size;
+
+ let activeEmployees = employees.filter(e=>
+
+    (e.status || 'Active') === 'Active'
+
+);
+
+let retiringEmployees = activeEmployees.filter(e=>{
+
+    let retirement = parseDate(e.retirement);
+
+    return retirement &&
+           retirement.getFullYear() === today.getFullYear() &&
+           retirement >= today;
+
+});
+let retiredEmployees = employees.filter(
+
+    e => (e.status || 'Active') === 'Retired'
+
+);
+    let overdueMedicals = latestMedicals.filter(m=>{
+        let due = parseDate(m.due);
+        return due && due < today;
+    });
+
+    let dueIn30Days = latestMedicals.filter(m=>{
+        let due = parseDate(m.due);
+        if(!due) return false;
+        let diff = (due - today)/(1000*60*60*24);
+        return diff >= 0 && diff <= 30;
+    });
+
+    let employeesWithMedical = new Set(latestMedicals.map(m=>m.staff));
+    let noMedicalEmployees = employees.filter(e=>!employeesWithMedical.has(e.staff));
+
+console.log("Active:", activeEmployees.length);
+console.log("Remaining:", retiringEmployees.length);
+console.log(retiringEmployees.map(e => e.staff + " - " + e.name));
+
+    return {
+        schemaVersion: 1,
+        readOnly: true,
+        generatedAt: new Date().toISOString(),
+        generatedAtDisplay: new Date().toLocaleString(),
+ dashboard: {
+    activeEmployees: activeEmployees.length,
+    remainingRetirementsThisYear: retiringEmployees.length,
+    retiredEmployees: retiredEmployees.length,
+    medicalsDoneThisYear: medicalsDoneThisYear,
+            overdueMedicals: overdueMedicals.length,
+            medicalDueIn30Days: dueIn30Days.length,
+            noMedicalRecords: noMedicalEmployees.length
+        },
+        employees: employees,
+        trainings: trainings,
+        medicals: medicals,
+        latestMedicals: latestMedicals,
+      lists: {
+    activeEmployees: activeEmployees.map(e=>e.staff),
+    remainingRetirementsThisYear: retiringEmployees.map(e=>e.staff),
+    overdueMedicals: overdueMedicals.map(m=>m.staff),
+    medicalDueIn30Days: dueIn30Days.map(m=>m.staff),
+    noMedicalRecords: noMedicalEmployees.map(e=>e.staff)
+}
+    };
+}
+
+
+
+function renderTrainingMaster(){
+
+document.getElementById(
+'trainingMasterList'
+).innerHTML =
+
+
+trainingMaster.map((t,i)=>
+
+`<div class='record'>
+
+${escapeHTML(t.name)}
+(${escapeHTML(t.duration)} ${escapeHTML(t.unit)})
+
+<button
+onclick='deleteTrainingMaster(${i})'>
+
+Delete
+
+</button>
+
+</div>`
+)
+
+.join('');
+
+let ddl =
+document.getElementById('tname');
+
+
+
+ddl.innerHTML =
+
+trainingMaster.map(t=>
+
+`<option value="${escapeHTML(t.name)}">
+
+${escapeHTML(t.name)}
+
+</option>`
+)
+.join('');
+
+}
+
+function addTrainingMaster(){
+
+
+
+
+let name =
+document.getElementById('newTraining')
+.value.trim();
+
+let duration =
+document.getElementById('trainingDuration')
+.value;
+
+let unit =
+document.getElementById('durationUnit')
+.value;
+
+if(!name) return;
+
+if(
+trainingMaster.some(
+t => t.name === name
+)
+){
+alert('Training already exists');
+return;
+}
+
+trainingMaster.push({
+    name:name,
+    duration:duration,
+    unit:unit
+});
+saveAll();
+
+renderTrainingMaster();
+
+document.getElementById('newTraining').value='';
+document.getElementById('trainingDuration').value='';
+document.getElementById('durationUnit').value='Hours';
+
+}
+
+
+function showTrainingsThisYear(){
+
+    let section =
+    document.getElementById(
+        "trainingYearSection"
+    );
+
+    let wasHidden =
+    section.classList.contains("hidden");
+
+    hideAllSections();
+
+    if(wasHidden)
+        section.classList.remove("hidden");
+
+    let year =
+    new Date().getFullYear();
+
+    let summary = {};
+
+    trainings.forEach(t=>{
+
+        let d = parseDate(t.date);
+
+        if(!d ||
+           d.getFullYear() !== year)
+           return;
+
+        summary[t.name] =
+        (summary[t.name] || 0) + 1;
+
+    });
+
+    trainingYearList.innerHTML =
+
+    Object.entries(summary)
+
+    .sort((a,b)=>b[1]-a[1])
+
+    .map(([name,count])=>
+`<div class='record'
+style="cursor:pointer"
+onclick="showTrainingParticipants('${encodeArg(name)}')">
+
+<b>${name}</b>
+(${count})
+
+</div>`
+
+    ).join('')
+
+    || 'No trainings conducted this year';
+
+}
+
+
+function closeTrainingYear(){
+
+    document
+    .getElementById("trainingYearSection")
+    .classList.add("hidden");
+
+}
+
+function showTrainingParticipants(name){
+
+    name = decodeArg(name);
+
+    let year =
+    new Date().getFullYear();
+
+    let people = trainings.filter(t=>{
+
+        let d = parseDate(t.date);
+
+        return t.name === name
+            &&
+            d
+            &&
+            d.getFullYear() === year;
+
+    });
+
+    trainingYearList.innerHTML =
+
+`<button
+style="margin-bottom:10px"
+onclick="showTrainingsThisYear()">
+← Back to Training List
+</button>
+
+<h4>${name}</h4>` +
+
+people.map(t=>{
+        let emp =
+        employees.find(
+            e => e.staff === t.staff
+        );
+
+        return `
+        <div class='record'
+        style="cursor:pointer"
+        onclick="openProfile('${encodeArg(t.staff)}')">
+
+        ${escapeHTML(t.staff)}
+        - ${escapeHTML(emp?.name || '')}
+
+        </div>`;
+
+    }).join('');
+
+}
+
+function deleteTrainingMaster(i){
+
+if(!confirm('Delete training?'))
+return;
+
+trainingMaster.splice(i,1);
+
+saveAll();
+
+renderTrainingMaster();
+
+}
+renderTrainingMaster();
+dashboard();
+publishMobileData();
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
